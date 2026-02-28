@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VedaSiddhanta | Ancient Rishi Math & Muhurata</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --saffron: #FF9933; --gold: #FFD700; --deep-maroon: #2d0a00; }
+        body { 
+            background: #1a0500; color: #fff; font-family: 'Kalam', cursive;
+            background-image: linear-gradient(rgba(26, 5, 0, 0.95), rgba(26, 5, 0, 0.95)), 
+                              url('https://images.unsplash.com/photo-1610116303244-6239f803fd51?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover; background-attachment: fixed;
+        }
+        .mystic-font { font-family: 'Cinzel', serif; }
+        
+        /* Glassmorphism Temple Cards */
+        .temple-card {
+            background: rgba(45, 20, 0, 0.9);
+            border: 2px solid var(--saffron);
+            border-radius: 24px;
+            box-shadow: 0 0 50px rgba(255, 153, 51, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Fixed Date Input - Saffron & High Contrast */
+        input { 
+            background: #3d1a00 !important; 
+            border: 2px solid var(--saffron) !important; 
+            color: var(--gold) !important; 
+            padding: 14px !important; 
+            border-radius: 12px !important; 
+            width: 100%;
+            font-size: 1.1rem;
+            display: block;
+        }
+        input::-webkit-calendar-picker-indicator {
+            background-color: var(--saffron);
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+            filter: invert(0);
+        }
+
+        .om-button {
+            background: linear-gradient(45deg, #cc5500, #ff9933);
+            box-shadow: 0 4px 20px rgba(204, 85, 0, 0.4);
+            transition: 0.3s;
+        }
+        .om-button:hover { transform: scale(1.02); box-shadow: 0 0 30px var(--saffron); }
+
+        /* Kundli Chart Styling */
+        .kundli-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            border: 2px solid var(--gold); aspect-ratio: 1; max-width: 280px; margin: auto;
+        }
+        .kundli-cell { 
+            border: 1px solid rgba(255, 215, 0, 0.2); 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 0.75rem; color: var(--gold); text-align: center; font-weight: bold;
+        }
+
+        /* Live Clock Styling */
+        .muhurata-clock {
+            border-bottom: 2px solid var(--saffron);
+            background: rgba(255, 153, 51, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="muhurata-clock w-full py-3 px-6 text-center">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center text-xs md:text-sm tracking-widest uppercase text-orange-400">
+            <div id="liveTime">Current Time: --:--:--</div>
+            <div class="font-bold text-orange-200" id="currentMuhurata">Muhurata: Calculating...</div>
+            <div id="liveDate">Tithi: -- -- ----</div>
+        </div>
+    </div>
+
+    <header class="text-center py-12 md:py-20 px-4">
+        <div class="text-orange-600 text-6xl mb-4 animate-pulse">🕉️</div>
+        <h1 class="mystic-font text-5xl md:text-8xl text-orange-500 tracking-tighter shadow-orange-900">VEDASIDDHANTA</h1>
+        <p class="text-orange-200 tracking-[0.5em] uppercase text-[10px] md:text-xs mt-4 italic font-bold">The Eternal Math of the Rishis</p>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 pb-20">
+        
+        <section class="temple-card p-8 mb-12 border-dashed border-orange-500/40 text-center">
+            <h3 class="mystic-font text-2xl text-gold mb-4">The Science of Time</h3>
+            <p class="text-orange-100/80 leading-relaxed italic md:px-10">
+                "In the era of the Ramayan, the Sages did not need satellites. They used <b>Siddhanta</b>—the mathematical calculation of the Grahas. Every soul is born with a specific vibration. By entering your birth details, we align your current Prana with the ancient movement of the stars. This is not a guess; it is the truth of the Universe."
+            </p>
+        </section>
+
+        <div class="temple-card p-8 md:p-12 mb-16 relative">
+            <div class="absolute -top-4 -left-4 text-4xl opacity-20">🔱</div>
+            <div class="absolute -bottom-4 -right-4 text-4xl opacity-20">🔱</div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-orange-400 tracking-widest ml-1 mb-2 block">Noble Name</label>
+                    <input type="text" id="userInputName" placeholder="eg. Ramneek Singh">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-bold text-orange-400 tracking-widest ml-1 mb-2 block">Date of Birth</label>
+                    <input type="date" id="userInputDob">
+                </div>
+            </div>
+            
+            <button onclick="calculateVedicLogic()" class="om-button w-full mt-12 py-5 text-white font-bold rounded-2xl uppercase tracking-[0.4em] text-xl">
+                Consult the Akasha 🏹
+            </button>
+        </div>
+
+        <div id="resultPortal" class="hidden space-y-12">
+            
+            <div id="captureArea" class="temple-card p-8 md:p-16 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]">
+                <div class="text-center mb-16">
+                    <h2 class="mystic-font text-4xl md:text-6xl text-orange-400" id="resName"></h2>
+                    <div class="h-px w-32 bg-orange-500 mx-auto mt-4"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+                    <div class="text-center">
+                        <h4 class="mystic-font text-gold mb-6 uppercase tracking-widest">Janma Kundli Chart</h4>
+                        <div class="kundli-grid" id="kundliGrid"></div>
+                        <p class="text-[10px] text-orange-600 mt-4 italic">Surya Siddhanta Projection</p>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="p-6 bg-black/40 border-l-4 border-orange-500 rounded-r-2xl">
+                            <span class="text-[10px] text-orange-400 font-bold uppercase">Nakshatra (Soul Star)</span>
+                            <p id="outNak" class="text-2xl text-white font-bold"></p>
+                        </div>
+                        <div class="p-6 bg-black/40 border-l-4 border-orange-500 rounded-r-2xl">
+                            <span class="text-[10px] text-orange-400 font-bold uppercase">Rashi (Moon Sign)</span>
+                            <p id="outRashi" class="text-2xl text-white font-bold"></p>
+                        </div>
+                        <div class="p-6 bg-black/40 border-l-4 border-orange-500 rounded-r-2xl">
+                            <span class="text-[10px] text-orange-400 font-bold uppercase">Ruling Element</span>
+                            <p id="outElement" class="text-2xl text-white font-bold"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 border-t border-orange-900 pt-10">
+                    <div>
+                        <h4 class="mystic-font text-orange-400 mb-3 tracking-widest">Dashavatar Connection</h4>
+                        <p id="outAvatar" class="text-orange-50 italic leading-relaxed"></p>
+                    </div>
+                    <div>
+                        <h4 class="mystic-font text-orange-400 mb-3 tracking-widest">2026 Destiny Path</h4>
+                        <p id="outDestiny" class="text-orange-50 leading-relaxed"></p>
+                    </div>
+                </div>
+
+                <div class="text-center p-8 bg-orange-500/5 rounded-3xl border border-orange-500/20 italic">
+                    <p class="text-gold uppercase text-[10px] mb-2 tracking-widest">Sacred Remedy</p>
+                    <p id="outRemedy" class="text-lg text-orange-100"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-center pb-20">
+                <button onclick="downloadVedicScroll()" class="px-12 py-4 border-2 border-orange-500 text-orange-400 rounded-2xl hover:bg-orange-500 hover:text-white transition uppercase font-bold tracking-widest shadow-xl">
+                    Download Sacred Scroll (PDF)
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <audio id="templeBell" src="https://www.soundjay.com/misc/sounds/bell-ringing-01.mp3"></audio>
+
+    <script>
+        // 1. Live Muhurata Logic
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            document.getElementById('liveTime').innerText = "Current Time: " + now.toLocaleTimeString();
+            document.getElementById('liveDate').innerText = "Tithi: " + now.toDateString();
+
+            let muhurata = "Shubha Muhurata";
+            if (hours >= 4 && hours < 6) muhurata = "🌅 Brahma Muhurta (Divine)";
+            else if (hours >= 12 && hours < 14) muhurata = "🌑 Rahu Kaal (Caution)";
+            else if (hours >= 17 && hours < 19) muhurata = "🪔 Sandhya Kaal (Pooja)";
+            else if (hours >= 20) muhurata = "🌙 Ratri (Rest)";
+            
+            document.getElementById('currentMuhurata').innerText = "Muhurata: " + muhurata;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 2. Calculation Data
+        const rashis = ["Mesha", "Vrishabha", "Mithuna", "Karka", "Simha", "Kanya", "Tula", "Vrishchika", "Dhanu", "Makara", "Kumbha", "Meena"];
+        const stars = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"];
+
+        // 3. Main Function
+        function calculateVedicLogic() {
+            const name = document.getElementById('userInputName').value;
+            const dobVal = document.getElementById('userInputDob').value;
+
+            if (!name || !dobVal) return alert("Please enter all details, Noble Soul.");
+
+            const dob = new Date(dobVal);
+            document.getElementById('templeBell').play();
+
+            const dayNum = Math.floor((dob - new Date(dob.getFullYear(), 0, 0)) / 86400000);
+            const rIdx = dayNum % 12;
+            const nIdx = dayNum % 27;
+
+            // Identity Update
+            document.getElementById('resultPortal').classList.remove('hidden');
+            document.getElementById('resName').innerText = name.toUpperCase();
+            document.getElementById('outNak').innerText = stars[nIdx];
+            document.getElementById('outRashi').innerText = rashis[rIdx];
+            document.getElementById('outElement').innerText = ["Agni (Fire)", "Prithvi (Earth)", "Vayu (Air)", "Jal (Water)"][dayNum % 4];
+
+            // Content Update
+            const avatars = [
+                {n: "Lord Rama", s: "Your energy mirrors the 7th Avatar. Dharma, discipline, and family duty are your strengths."},
+                {n: "Lord Krishna", s: "You resonate with the 8th Avatar. Strategic wisdom, love, and detachment define your path."},
+                {n: "Lord Narasimha", s: "The 4th Avatar energy gives you intense protective powers. You fearlessly destroy ego."},
+                {n: "Lord Vamana", s: "Like the 5th Avatar, your intellect is your greatest weapon. You will conquer through wisdom."}
+            ];
+            const av = avatars[dayNum % 4];
+            document.getElementById('outAvatar').innerHTML = `<b>${av.n}:</b> ${av.s}`;
+            document.getElementById('outDestiny').innerText = `As a ${rashis[rIdx]} Rashi, 2026 is a year of expansion. Your nakshatra ${stars[nIdx]} indicates a major shift in prosperity during the post-monsoon period.`;
+            document.getElementById('outRemedy').innerText = `Apply a saffron tilak on your forehead and feed grains to birds on the day of your birth sign's planet.`;
+
+            // Draw Kundli Chart
+            const grid = document.getElementById('kundliGrid');
+            grid.innerHTML = '';
+            const planets = ["Surya", "Guru", "Shani", "Budh", "Chandra", "Ketu", "Rahu", "Mangal", "Shukra"];
+            for(let i=0; i<9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'kundli-cell';
+                cell.innerText = (i === 4) ? rashis[rIdx] : planets[(i + rIdx) % 9];
+                grid.appendChild(cell);
+            }
+
+            window.scrollTo({ top: document.getElementById('resultPortal').offsetTop - 50, behavior: 'smooth' });
+        }
+
+        // 4. PDF Download
+        function downloadVedicScroll() {
+            const element = document.getElementById('captureArea');
+            html2pdf().from(element).set({
+                margin: 0.5,
+                filename: 'VedaSiddhanta_Scroll.pdf',
+                html2canvas: { scale: 2, backgroundColor: '#1a0500' },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            }).save();
+        }
+    </script>
+</body>
+</html>
